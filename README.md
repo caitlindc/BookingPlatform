@@ -16,7 +16,7 @@ Booking Platform is a Web API project that lets the user see list of available r
 There are 2 endpoints, one for getting the list of rooms and one for booking.
 Swagger is used for the documentation of the API.
 
-Users
+Users:
 Since there's no requirement, I didn't prioritize adding a user logging feature. Anyone can use the api without authorization.
 
 Endpoints:
