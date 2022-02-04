@@ -1,6 +1,9 @@
 ﻿using BookingPlatform.Application;
 using BookingPlatform.Infrastructure;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
+using FluentValidation.AspNetCore;
+using BookingPlatform.Application.Common.Interfaces;
 
 namespace BookingPlatform.API
 {
@@ -19,7 +22,17 @@ namespace BookingPlatform.API
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<IApplicationDbContext>())
+                .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookingPlatform.API", Version = "v1" });
