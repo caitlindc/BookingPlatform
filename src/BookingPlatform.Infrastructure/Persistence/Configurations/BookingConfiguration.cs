@@ -16,9 +16,9 @@ namespace BookingPlatform.Infrastructure.Persistence.Configurations
                 .IsRequired();
             builder.Property(t => t.UserEmail)
                 .IsRequired();
-            builder.Property(t => t.DateFrom)
+            builder.Property(t => t.UtcDateFrom)
                 .IsRequired();
-            builder.Property(t => t.DateTo)
+            builder.Property(t => t.UtcDateTo)
                 .IsRequired();
         }
     }

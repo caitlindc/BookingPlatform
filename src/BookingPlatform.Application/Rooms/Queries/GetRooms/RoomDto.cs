@@ -14,7 +14,7 @@ namespace BookingPlatform.Application.Rooms.Queries.GetRooms
 
         public string Title { get; set; }
 
-        public decimal PricePerNight { get; set; }
+        public decimal PricePerNightPhp { get; set; }
 
         public string Description { get; set; }
 

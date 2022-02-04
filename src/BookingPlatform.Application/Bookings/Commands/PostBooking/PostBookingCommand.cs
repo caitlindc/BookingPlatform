@@ -16,13 +16,11 @@ namespace BookingPlatform.Application.Bookings.Commands.PostBooking
 
         public int NumberOfPeople { get; set; }
 
-        public DateTime DateFrom { get; set; }
+        public DateTime UtcDateFrom { get; set; }
 
-        public DateTime DateTo { get; set; }
+        public DateTime UtcDateTo { get; set; }
 
         public string UserEmail { get; set; }
-
-        public DateTime BookedDate { get; set; }
 
         public class PostBookingCommandHandler : IRequestHandler<PostBookingCommand, bool>
         {
@@ -38,8 +36,14 @@ namespace BookingPlatform.Application.Bookings.Commands.PostBooking
 
             public async Task<bool> Handle(PostBookingCommand request, CancellationToken cancellationToken)
             {
-                var entity = new Booking();
-                entity = _mapper.Map<Booking>(request);
+                var entity = new Booking { 
+                    RoomId = request.RoomId,
+                    NumberOfPeople = request.NumberOfPeople,
+                    UtcDateFrom = request.UtcDateFrom.Date,
+                    UtcDateTo = request.UtcDateTo.Date,
+                    UserEmail = request.UserEmail,
+                    UtcBookedDate = DateTime.UtcNow
+                };
                 _context.Bookings.Add(entity);
                 await _context.SaveChangesAsync(cancellationToken);
 

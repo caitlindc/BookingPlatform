@@ -14,13 +14,13 @@ namespace BookingPlatform.Domain.Entities
 
         public int NumberOfPeople { get; set; }
 
-        public DateTime DateFrom { get; set; }
+        public DateTime UtcDateFrom { get; set; }
 
-        public DateTime DateTo { get; set; }
+        public DateTime UtcDateTo { get; set; }
 
         public string UserEmail { get; set; }
 
-        public DateTime BookedDate { get; set; }
+        public DateTime UtcBookedDate { get; set; }
 
         public Room Room { get; set; }
     }

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookingPlatform.Domain", "src\BookingPlatform.Domain\BookingPlatform.Domain.csproj", "{A22868CA-83C6-42B6-A03D-CA99EDA75D19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingPlatform.API", "src\BookingPlatform.API\BookingPlatform.API.csproj", "{34919B24-8E3C-4064-BD70-B5C9AAAACDD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookingPlatform.API", "src\BookingPlatform.API\BookingPlatform.API.csproj", "{34919B24-8E3C-4064-BD70-B5C9AAAACDD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

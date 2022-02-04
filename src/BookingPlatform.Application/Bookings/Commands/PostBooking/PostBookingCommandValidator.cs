@@ -16,15 +16,29 @@ namespace BookingPlatform.Application.Bookings.Commands.PostBooking
 
             RuleFor(x => x.UserEmail).NotNull().NotEmpty().WithMessage("User email is required.").EmailAddress().WithMessage("Should be in email format.");
 
-            RuleFor(x => x.RoomId).NotNull().NotEqual(0).WithMessage("Room id required.");
+            RuleFor(x => x).MustAsync(IsRoomIdValid).WithMessage("Room id is not valid.");
 
             RuleFor(x => x).Must(IsCapacityNotEmpty).WithMessage("Number of people should be greater than zero.")
                 .MustAsync(EnoughCapacity).WithMessage("Room does not have enough capacity");
 
-            RuleFor(x => x.DateFrom).NotNull().NotEmpty().GreaterThan(DateTime.UtcNow).WithMessage("Date From should be greater than current date.");
+            RuleFor(x => x.UtcDateFrom).NotNull().NotEmpty().GreaterThan(DateTime.UtcNow).WithMessage("Date From should be greater than current date.");
 
             RuleFor(x => x).MustAsync(ValidDateFrom).WithMessage("Date To should be greater than Date From.")
                 .MustAsync(AreDatesAvailable).WithMessage("Dates are not available.");
+        }
+
+        public async Task<bool> IsRoomIdValid(PostBookingCommand request, CancellationToken cancellationToken)
+        {
+            var isValid = false;
+
+            var room = await _context.Rooms
+                .Where(x => x.Id == request.RoomId)
+                .FirstOrDefaultAsync();
+
+            if (room != null && room.Id > 0)
+                return true;
+
+            return isValid;
         }
 
         public bool IsCapacityNotEmpty(PostBookingCommand request)
@@ -41,11 +55,11 @@ namespace BookingPlatform.Application.Bookings.Commands.PostBooking
         {
             var isValid = false;
 
-            var roomCapacity = await _context.Rooms
+            var room = await _context.Rooms
                 .Where(x => x.Id == request.RoomId)
                 .FirstOrDefaultAsync();
-            
-            if(request.NumberOfPeople <= roomCapacity?.Capacity)
+
+            if(room == null || (room != null && request.NumberOfPeople <= room?.Capacity))
                 return true;
 
             return isValid;
@@ -55,7 +69,7 @@ namespace BookingPlatform.Application.Bookings.Commands.PostBooking
         {
             bool isValid = false;
 
-            if (request.DateFrom != null && request.DateFrom > request.DateTo)
+            if (request.UtcDateFrom != null && request.UtcDateTo > request.UtcDateFrom)
                 return true;
 
             return isValid;
@@ -65,7 +79,9 @@ namespace BookingPlatform.Application.Bookings.Commands.PostBooking
         {
             var hasConflict = await _context.Bookings
                 .AnyAsync(b => b.RoomId == request.RoomId &&
-                ((b.DateFrom > request.DateFrom && b.DateFrom < request.DateTo) || (b.DateTo > request.DateFrom && b.DateTo < request.DateTo)));
+                ((request.UtcDateFrom >= b.UtcDateFrom && request.UtcDateFrom <= b.UtcDateTo) || (request.UtcDateTo >= b.UtcDateFrom && request.UtcDateTo <= b.UtcDateTo)));
+
+            var bookings = _context.Bookings;
 
             return !hasConflict;
         }
